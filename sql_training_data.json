@@ -1,0 +1,404 @@
+{
+  "training_data": [
+    {
+      "question": "List students who enrolled after 2022",
+      "sql": "SELECT * FROM students WHERE enrollment_year > 2022",
+      "category": "filtering",
+      "complexity": "simple"
+    },
+    {
+      "question": "Show professors who teach more than 2 courses",
+      "sql": "SELECT professor_id FROM courses GROUP BY professor_id HAVING COUNT(*) > 2",
+      "category": "aggregation",
+      "complexity": "medium"
+    },
+    {
+      "question": "Which students failed any course?",
+      "sql": "SELECT DISTINCT student_id FROM grades WHERE grade < 2.0",
+      "category": "filtering",
+      "complexity": "simple"
+    },
+    {
+      "question": "List all departments and the number of professors in each",
+      "sql": "SELECT department_id, COUNT(*) FROM professors GROUP BY department_id",
+      "category": "aggregation",
+      "complexity": "medium"
+    },
+    {
+      "question": "Show courses with no enrolled students",
+      "sql": "SELECT course_id FROM courses WHERE course_id NOT IN (SELECT DISTINCT course_id FROM enrollments)",
+      "category": "subquery",
+      "complexity": "medium"
+    },
+    {
+      "question": "Find average grade per department",
+      "sql": "SELECT d.department_name, AVG(g.grade) FROM departments d JOIN professors p ON d.department_id = p.department_id JOIN courses c ON p.professor_id = c.professor_id JOIN grades g ON c.course_id = g.course_id GROUP BY d.department_name",
+      "category": "joins_aggregation",
+      "complexity": "complex"
+    },
+    {
+      "question": "Get students who took both AI and ML",
+      "sql": "SELECT student_id FROM enrollments WHERE course_id IN (SELECT course_id FROM courses WHERE course_name IN ('AI', 'ML')) GROUP BY student_id HAVING COUNT(DISTINCT course_id) = 2",
+      "category": "subquery_aggregation",
+      "complexity": "complex"
+    },
+    {
+      "question": "Show all students in the Computer Science department",
+      "sql": "SELECT * FROM students WHERE department_id = (SELECT department_id FROM departments WHERE department_name = 'Computer Science')",
+      "category": "subquery",
+      "complexity": "medium"
+    },
+    {
+      "question": "List the course names and the number of students enrolled in each",
+      "sql": "SELECT c.course_name, COUNT(e.student_id) FROM courses c JOIN enrollments e ON c.course_id = e.course_id GROUP BY c.course_name",
+      "category": "joins_aggregation",
+      "complexity": "medium"
+    },
+    {
+      "question": "Find professors who don't teach any courses",
+      "sql": "SELECT * FROM professors WHERE professor_id NOT IN (SELECT professor_id FROM courses)",
+      "category": "subquery",
+      "complexity": "medium"
+    },
+    {
+      "question": "What is the average grade for students in each department?",
+      "sql": "SELECT s.department_id, AVG(g.grade) FROM students s JOIN grades g ON s.student_id = g.student_id GROUP BY s.department_id",
+      "category": "joins_aggregation",
+      "complexity": "medium"
+    },
+    {
+      "question": "List students who have never enrolled in any course",
+      "sql": "SELECT * FROM students WHERE student_id NOT IN (SELECT student_id FROM enrollments)",
+      "category": "subquery",
+      "complexity": "medium"
+    },
+    {
+      "question": "Show the top 5 courses with the highest average grades",
+      "sql": "SELECT c.course_name, AVG(g.grade) FROM courses c JOIN grades g ON c.course_id = g.course_id GROUP BY c.course_name ORDER BY AVG(g.grade) DESC LIMIT 5",
+      "category": "joins_aggregation",
+      "complexity": "medium"
+    },
+    {
+      "question": "Who are the students with grades below 2.0 in more than 2 courses?",
+      "sql": "SELECT student_id FROM grades WHERE grade < 2.0 GROUP BY student_id HAVING COUNT(*) > 2",
+      "category": "aggregation",
+      "complexity": "medium"
+    },
+    {
+      "question": "List names of students whose first name is the same as the last name",
+      "sql": "SELECT * FROM students WHERE first_name = last_name",
+      "category": "filtering",
+      "complexity": "simple"
+    },
+    {
+      "question": "Which course has the least number of enrollments?",
+      "sql": "SELECT course_id FROM enrollments GROUP BY course_id ORDER BY COUNT(*) ASC LIMIT 1",
+      "category": "aggregation",
+      "complexity": "medium"
+    },
+    {
+      "question": "Find departments with no students",
+      "sql": "SELECT * FROM departments WHERE department_id NOT IN (SELECT department_id FROM students)",
+      "category": "subquery",
+      "complexity": "medium"
+    },
+    {
+      "question": "List courses that no one has enrolled in yet",
+      "sql": "SELECT * FROM courses WHERE course_id NOT IN (SELECT course_id FROM enrollments)",
+      "category": "subquery",
+      "complexity": "medium"
+    },
+    {
+      "question": "Show student names who are enrolled in more than 3 courses",
+      "sql": "SELECT student_id FROM enrollments GROUP BY student_id HAVING COUNT(course_id) > 3",
+      "category": "aggregation",
+      "complexity": "medium"
+    },
+    {
+      "question": "Which students share the same first name?",
+      "sql": "SELECT first_name FROM students GROUP BY first_name HAVING COUNT(*) > 1",
+      "category": "aggregation",
+      "complexity": "medium"
+    },
+    {
+      "question": "Count the number of professors in each department",
+      "sql": "SELECT department_id, COUNT(*) FROM professors GROUP BY department_id",
+      "category": "aggregation",
+      "complexity": "medium"
+    },
+    {
+      "question": "Find students who scored above the average grade of their course",
+      "sql": "SELECT * FROM grades g1 WHERE g1.grade > (SELECT AVG(g2.grade) FROM grades g2 WHERE g2.course_id = g1.course_id)",
+      "category": "subquery",
+      "complexity": "complex"
+    },
+    {
+      "question": "List courses where the number of students enrolled is more than the department's average enrollment per course",
+      "sql": "SELECT c.course_id FROM courses c JOIN enrollments e ON c.course_id = e.course_id GROUP BY c.course_id HAVING COUNT(e.student_id) > (SELECT AVG(course_count) FROM (SELECT COUNT(*) AS course_count FROM courses GROUP BY department_id) AS dept_avg)",
+      "category": "complex_subquery",
+      "complexity": "complex"
+    },
+    {
+      "question": "Which students have the highest grade in each course?",
+      "sql": "SELECT * FROM grades g1 WHERE grade = (SELECT MAX(grade) FROM grades g2 WHERE g2.course_id = g1.course_id)",
+      "category": "subquery",
+      "complexity": "complex"
+    },
+    {
+      "question": "Show the top 3 departments by average student grade",
+      "sql": "SELECT s.department_id, AVG(g.grade) AS avg_grade FROM students s JOIN grades g ON s.student_id = g.student_id GROUP BY s.department_id ORDER BY avg_grade DESC LIMIT 3",
+      "category": "joins_aggregation",
+      "complexity": "medium"
+    },
+    {
+      "question": "Find students who have the same course enrollment pattern as student ID 101",
+      "sql": "SELECT DISTINCT s.student_id FROM enrollments s WHERE NOT EXISTS (SELECT e.course_id FROM enrollments e WHERE e.student_id = 101 AND e.course_id NOT IN (SELECT e2.course_id FROM enrollments e2 WHERE e2.student_id = s.student_id))",
+      "category": "complex_subquery",
+      "complexity": "complex"
+    },
+    {
+      "question": "List the top performing student in each department",
+      "sql": "SELECT s.* FROM students s JOIN grades g ON s.student_id = g.student_id WHERE (s.department_id, g.grade) IN (SELECT department_id, MAX(grade) FROM students s2 JOIN grades g2 ON s2.student_id = g2.student_id GROUP BY department_id)",
+      "category": "complex_subquery",
+      "complexity": "complex"
+    },
+    {
+      "question": "For each professor, find their most popular course by enrollment",
+      "sql": "SELECT p.professor_id, c.course_id FROM professors p JOIN courses c ON p.professor_id = c.professor_id JOIN enrollments e ON c.course_id = e.course_id GROUP BY p.professor_id, c.course_id HAVING COUNT(e.student_id) = (SELECT MAX(cnt) FROM (SELECT COUNT(*) AS cnt FROM courses c2 JOIN enrollments e2 ON c2.course_id = e2.course_id WHERE c2.professor_id = p.professor_id GROUP BY c2.course_id) AS sub)",
+      "category": "complex_subquery",
+      "complexity": "complex"
+    },
+    {
+      "question": "Rank students in each department by their average grade",
+      "sql": "SELECT student_id, department_id, AVG(grade) AS avg_grade, RANK() OVER (PARTITION BY department_id ORDER BY AVG(grade) DESC) AS dept_rank FROM students s JOIN grades g ON s.student_id = g.student_id GROUP BY s.student_id, s.department_id",
+      "category": "window_function",
+      "complexity": "complex"
+    },
+    {
+      "question": "Which courses have more than twice the average number of enrollments across all courses?",
+      "sql": "SELECT course_id FROM enrollments GROUP BY course_id HAVING COUNT(*) > 2 * (SELECT AVG(enrollment_count) FROM (SELECT COUNT(*) AS enrollment_count FROM enrollments GROUP BY course_id) AS avg_sub)",
+      "category": "complex_subquery",
+      "complexity": "complex"
+    },
+    {
+      "question": "Find professors who teach all the courses in their department",
+      "sql": "SELECT p.professor_id FROM professors p WHERE NOT EXISTS (SELECT * FROM courses c WHERE c.department_id = p.department_id AND c.professor_id != p.professor_id)",
+      "category": "complex_subquery",
+      "complexity": "complex"
+    }
+  ],
+  "negative_examples": [
+    {
+      "question": "Show me purple moon classes",
+      "sql": "-- Invalid: No such entity 'purple moon classes' in schema",
+      "category": "invalid_entity",
+      "complexity": "invalid"
+    },
+    {
+      "question": "Get how much happiness each student has",
+      "sql": "-- Invalid: 'happiness' is not a column in 'students' or any known table",
+      "category": "invalid_column",
+      "complexity": "invalid"
+    },
+    {
+      "question": "Find students whose passwords start with 'admin'",
+      "sql": "-- Invalid: passwords should not be accessible or stored in plaintext",
+      "category": "security_violation",
+      "complexity": "invalid"
+    },
+    {
+      "question": "List grades from the astronomy course in 1995",
+      "sql": "-- Invalid: No course data likely exists from 1995 unless schema supports historical versions",
+      "category": "invalid_data",
+      "complexity": "invalid"
+    },
+    {
+      "question": "Print emails of students who love Python",
+      "sql": "-- Invalid: 'love Python' is not a structured field in the database",
+      "category": "invalid_filter",
+      "complexity": "invalid"
+    },
+    {
+      "question": "Give me all enrollments after 2040",
+      "sql": "-- Invalid: assuming the current year is before 2040, this is logically invalid",
+      "category": "invalid_date",
+      "complexity": "invalid"
+    },
+    {
+      "question": "List professors with GPA more than 4.5",
+      "sql": "-- Invalid: professors do not have GPAs",
+      "category": "invalid_column",
+      "complexity": "invalid"
+    },
+    {
+      "question": "Find students whose birthdays fall on Mars",
+      "sql": "-- Invalid: 'Mars' is not a valid date or field in the database",
+      "category": "invalid_filter",
+      "complexity": "invalid"
+    },
+    {
+      "question": "Show me departments with IQ over 150",
+      "sql": "-- Invalid: departments do not have an IQ field",
+      "category": "invalid_column",
+      "complexity": "invalid"
+    },
+    {
+      "question": "List students who scored A+ in their emotions test",
+      "sql": "-- Invalid: no 'emotions test' exists in the schema",
+      "category": "invalid_entity",
+      "complexity": "invalid"
+    },
+    {
+      "question": "What is the square root of the department name of each student?",
+      "sql": "-- Invalid: cannot apply square root to string data",
+      "category": "invalid_operation",
+      "complexity": "invalid"
+    },
+    {
+      "question": "Get me the GPA of the student with the smallest last name.",
+      "sql": "-- Invalid: 'Smallest last name' is ambiguous — length-wise? alphabetical? meaningless without clarification",
+      "category": "ambiguous_query",
+      "complexity": "invalid"
+    },
+    {
+      "question": "Show courses that are longer than the average department height.",
+      "sql": "-- Invalid: 'Department height' is not a defined attribute — mixing unrelated dimensions (temporal vs spatial)",
+      "category": "invalid_attribute",
+      "complexity": "invalid"
+    },
+    {
+      "question": "List students who are enrolled more than 100% of the time.",
+      "sql": "-- Invalid: 100% enrollment makes no logical sense; enrollment is a discrete count, not a percentage",
+      "category": "logical_error",
+      "complexity": "invalid"
+    },
+    {
+      "question": "Find the top 3 courses taught by students who are not professors.",
+      "sql": "-- Invalid: Students don't teach courses. Contradictory logic",
+      "category": "logical_error",
+      "complexity": "invalid"
+    },
+    {
+      "question": "Which grades failed more than they passed?",
+      "sql": "-- Invalid: Grades can't fail or pass — it's the student who does. Illogical subject",
+      "category": "logical_error",
+      "complexity": "invalid"
+    },
+    {
+      "question": "Return all professors who don't teach any course but still teach.",
+      "sql": "-- Invalid: Contradiction — someone can't both not teach and teach",
+      "category": "logical_error",
+      "complexity": "invalid"
+    },
+    {
+      "question": "Show me the student who enrolled in the average.",
+      "sql": "-- Invalid: 'Enrolled in the average' is meaningless. Average what — course difficulty, count?",
+      "category": "ambiguous_query",
+      "complexity": "invalid"
+    },
+    {
+      "question": "Give me the professor whose name appears in the most enrollments.",
+      "sql": "-- Invalid: Professor names don't appear in enrollments; there's no textual trace — unless your schema wrongly allows it",
+      "category": "invalid_relationship",
+      "complexity": "invalid"
+    },
+    {
+      "question": "Get courses where grades equal 'excellent'",
+      "sql": "-- Invalid: If grades are numeric, this is a datatype mismatch. 'Excellent' is not a valid SQL literal in that context",
+      "category": "datatype_mismatch",
+      "complexity": "invalid"
+    },
+    {
+      "question": "Show departments whose phone numbers start with a vowel",
+      "sql": "-- Invalid: Phone numbers are numeric — can't start with a vowel",
+      "category": "datatype_mismatch",
+      "complexity": "invalid"
+    },
+    {
+      "question": "Which students have the same professor in all semesters of their degree?",
+      "sql": "-- Invalid: Assumes historical tracking of semesters per student-professor pair — often not available unless you've modeled terms and timelines",
+      "category": "missing_schema",
+      "complexity": "invalid"
+    },
+    {
+      "question": "List students whose favorite color is red and took at least 10 blue classes",
+      "sql": "-- Invalid: 'Favorite color' and 'blue classes' likely don't exist in schema — requires synthetic logic or hallucinated attributes",
+      "category": "invalid_attribute",
+      "complexity": "invalid"
+    }
+  ],
+  "schema_info": {
+    "tables": [
+      {
+        "name": "students",
+        "columns": ["student_id", "name", "email", "enrollment_year", "department_id"],
+        "description": "Student information table"
+      },
+      {
+        "name": "professors",
+        "columns": ["professor_id", "name", "department_id", "email"],
+        "description": "Professor information table"
+      },
+      {
+        "name": "courses",
+        "columns": ["course_id", "course_name", "professor_id", "department_id"],
+        "description": "Course information table"
+      },
+      {
+        "name": "enrollments",
+        "columns": ["enrollment_id", "student_id", "course_id", "enrollment_date"],
+        "description": "Student course enrollments"
+      },
+      {
+        "name": "grades",
+        "columns": ["grade_id", "enrollment_id", "grade", "course_id"],
+        "description": "Student grades for courses"
+      },
+      {
+        "name": "departments",
+        "columns": ["department_id", "department_name"],
+        "description": "Department information"
+      }
+    ],
+    "relationships": [
+      {
+        "from": "students",
+        "to": "enrollments",
+        "type": "one_to_many",
+        "key": "student_id"
+      },
+      {
+        "from": "courses",
+        "to": "enrollments",
+        "type": "one_to_many",
+        "key": "course_id"
+      },
+      {
+        "from": "enrollments",
+        "to": "grades",
+        "type": "one_to_many",
+        "key": "enrollment_id"
+      },
+      {
+        "from": "professors",
+        "to": "courses",
+        "type": "one_to_many",
+        "key": "professor_id"
+      },
+      {
+        "from": "departments",
+        "to": "professors",
+        "type": "one_to_many",
+        "key": "department_id"
+      }
+    ]
+  },
+  "metadata": {
+    "total_examples": 25,
+    "total_negative_examples": 25,
+    "categories": ["filtering", "aggregation", "subquery", "joins_aggregation", "subquery_aggregation", "complex_subquery", "window_function"],
+    "complexity_levels": ["simple", "medium", "complex"],
+    "created_date": "2025-07-20",
+    "version": "1.2"
+  }
+} 
